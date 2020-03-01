@@ -1,4 +1,4 @@
-from config import SCREENHEIGHT, SCREENWIDTH, apple_size, screen, velocity
+from config import SCREENHEIGHT, SCREENWIDTH, apple_size, velocity
 from random import randint
 import pygame
 
@@ -11,6 +11,6 @@ class Apple:
         self.rect = pygame.Rect(self.x, self.y, self.size, self.size)
         self.color = (250, 50, 5)
 
-    def update(self):
+    def update(self, screen):
         self.rect = pygame.Rect(self.x, self.y, self.size, self.size)
         pygame.draw.rect(screen, self.color, self.rect)

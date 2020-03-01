@@ -1,12 +1,16 @@
-import numpy
 import torch
 import torch.nn as nn
 
 
 class Brain(nn.Module):
+    in_nodes = 8
+    hidden_nodes = 6
+    out_nodes = 4
+
     def __init__(self):
         super(Brain, self).__init__()
-        self.net = nn.Sequential(nn.Linear(8, 6), nn.Sigmoid(), nn.Linear(6, 4), nn.Sigmoid())
+        self.net = nn.Sequential(nn.Linear(self.in_nodes, self.out_nodes),
+                                 nn.Sigmoid())
 
     def forward(self, inputs):
         inputs = torch.tensor(inputs).float()

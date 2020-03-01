@@ -1,0 +1,34 @@
+SCREENWIDTH = 18
+SCREENHEIGHT = 18
+TICKRATE = 100000  # frame per sec
+velocity = 1  # pixels per frame
+apple_size = 1  # pixels
+snake_size = 1  # pixels
+positioner = snake_size//velocity
+population_size = 100
+parents_size = 10
+idle_time = 2500  # ms
+mutation_rate = 100  # per mile
+mutation_frequency = 20  # percent
+crossing_probability = 10  # percent
+epoch_number = 100
+
+<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<Training>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+Epoch;Best;Average
+1;7.026;0.241
+2;4.016;0.46153
+3;4.006;0.72199
+4;27.092;1.62526
+5;31.084;3.06097
+6;35.112;14.7721
+7;36.128;19.33814
+8;39.135;23.03981
+9;39.125;22.6092
+10;39.125;23.58605
+11;42.148;23.85006
+12;39.126;24.75307
+13;47.159;26.35415
+14;50.25;25.9456
+15;52.241;30.79767
+16;55.242;41.08432

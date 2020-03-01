@@ -1,4 +1,4 @@
-from config import screen, TICKRATE, clock, idle_time, SCREENWIDTH, SCREENHEIGHT, snake_size, apple_size
+from config import TICKRATE, idle_time, SCREENWIDTH, SCREENHEIGHT, snake_size, apple_size
 import pygame
 import torch
 from snake import Snake
@@ -8,6 +8,9 @@ from brain import Brain
 
 
 class Game:
+    screen = pygame.display.set_mode((SCREENWIDTH, SCREENHEIGHT))
+    clock = pygame.time.Clock()
+
     def __init__(self, phase):
         self.run = True
         self.score = 0
@@ -25,12 +28,12 @@ class Game:
         self.loop()
 
     def update(self):
-        self.head.update()
+        self.head.update(self.screen)
         for body in self.body_list:
-            body.body_move()
-        self.apple.update()
+            body.body_move(self.screen)
+        self.apple.update(self.screen)
         for sensor in self.sensors:
-            sensor.update()
+            sensor.update(self.screen)
 
     def check(self):
         if pygame.Rect.colliderect(self.head.rect, self.apple.rect):
@@ -44,27 +47,31 @@ class Game:
                 self.run = False
                 break
 
-        if self.head.x <= 0 or self.head.x >= SCREENWIDTH or self.head.y <= 0 or self.head.y >= SCREENHEIGHT:
+        if self.head.x <= 0 or \
+                self.head.x + snake_size >= SCREENWIDTH or \
+                self.head.y <= 0 or \
+                self.head.y + snake_size >= SCREENHEIGHT:
             self.run = False
 
         check_time = pygame.time.get_ticks()
         if check_time - idle_time > self.timer:
             self.run = False
+            self.head.turn_counter = 0
 
     def get_inputs(self):
         inputs = [0] * 4
-        if self.apple.y < self.head.y - apple_size:
+        if self.apple.y <= self.head.y - apple_size:
             inputs[0] = 1
-        elif self.apple.y > self.head.y + snake_size:
+        elif self.apple.y >= self.head.y + snake_size:
             inputs[1] = 1
-        if self.apple.x > self.head.x + snake_size:
+        if self.apple.x >= self.head.x + snake_size:
             inputs[2] = 1
-        elif self.apple.x < self.head.x - apple_size:
+        elif self.apple.x <= self.head.x - apple_size:
             inputs[3] = 1
 
         for sensor in self.sensors:
             activation = 0
-            for body in self.body_list:
+            for body in self.body_list[1:]:
                 if pygame.Rect.colliderect(sensor.rect, body.rect):
                     activation = 1
                     break
@@ -82,7 +89,7 @@ class Game:
     def loop(self):
         color = (255, 255, 255)
         while self.run:
-            screen.fill(color)
+            self.screen.fill(color)
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     exit()
@@ -106,4 +113,5 @@ class Game:
             self.update()
 
             pygame.display.flip()
-            clock.tick(TICKRATE)
+            self.clock.tick(TICKRATE)
+        self.score = (1000 * self.score) + self.head.turn_counter
