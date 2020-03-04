@@ -22,7 +22,7 @@ class Game:
         self.end = False
         self.brain = Brain()
         self.phase = phase
-        self.brain.load_state_dict(torch.load('data/'+str(phase)))
+        self.brain.load_state_dict(torch.load('data/'+str(phase) + '.pt'))
         self.brain.eval()
         self.timer = pygame.time.get_ticks()
         self.loop()
@@ -114,4 +114,4 @@ class Game:
 
             pygame.display.flip()
             self.clock.tick(TICKRATE)
-        self.score = (1000 * self.score) + self.head.turn_counter
+        self.score = self.score + self.head.turn_counter * 0.001

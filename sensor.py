@@ -4,8 +4,24 @@ from snake import positions
 
 
 class Sensor:
+    """
+        A class used to represents a sensor which detects collision. They are used to produce inputs for Brain class.
+
+        Attributes
+        ----------
+        color : tuple
+            sensor's color in RGB format
+
+        Methods
+        -------
+        update(screen)
+            gather last coordinates of head from global positions array and adjust the value based on which sensor
+            it is, then updates position on the screen
+    """
+
+    color = (0, 0, 0)
+
     def __init__(self, position):
-        self.color = (0, 0, 0)
         self.xchange = 0
         self.ychange = 0
         self.direction = position
