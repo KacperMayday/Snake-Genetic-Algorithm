@@ -1,4 +1,4 @@
-from config import TICKRATE, idle_time, SCREENWIDTH, SCREENHEIGHT, snake_size, apple_size
+import config as cfg
 import pygame
 import torch
 from snake import Snake
@@ -8,7 +8,7 @@ from brain import Brain
 
 
 class Game:
-    screen = pygame.display.set_mode((SCREENWIDTH, SCREENHEIGHT))
+    screen = pygame.display.set_mode((cfg.SCREENWIDTH, cfg.SCREENHEIGHT))
     clock = pygame.time.Clock()
 
     def __init__(self, phase):
@@ -48,25 +48,25 @@ class Game:
                 break
 
         if self.head.x <= 0 or \
-                self.head.x + snake_size >= SCREENWIDTH or \
+                self.head.x + cfg.snake_size >= cfg.SCREENWIDTH or \
                 self.head.y <= 0 or \
-                self.head.y + snake_size >= SCREENHEIGHT:
+                self.head.y + cfg.snake_size >= cfg.SCREENHEIGHT:
             self.run = False
 
         check_time = pygame.time.get_ticks()
-        if check_time - idle_time > self.timer:
+        if check_time - cfg.idle_time > self.timer:
             self.run = False
             self.head.turn_counter = 0
 
     def get_inputs(self):
         inputs = [0] * 4
-        if self.apple.y <= self.head.y - apple_size:
+        if self.apple.y <= self.head.y - cfg.apple_size:
             inputs[0] = 1
-        elif self.apple.y >= self.head.y + snake_size:
+        elif self.apple.y >= self.head.y + cfg.snake_size:
             inputs[1] = 1
-        if self.apple.x >= self.head.x + snake_size:
+        if self.apple.x >= self.head.x + cfg.snake_size:
             inputs[2] = 1
-        elif self.apple.x <= self.head.x - apple_size:
+        elif self.apple.x <= self.head.x - cfg.apple_size:
             inputs[3] = 1
 
         for sensor in self.sensors:
@@ -76,7 +76,7 @@ class Game:
                     activation = 1
                     break
 
-            if sensor.x <= 0 or sensor.x >= SCREENWIDTH or sensor.y <= 0 or sensor.y >= SCREENHEIGHT:
+            if sensor.x <= 0 or sensor.x >= cfg.SCREENWIDTH or sensor.y <= 0 or sensor.y >= cfg.SCREENHEIGHT:
                 activation = 1
 
             inputs.append(activation)
@@ -113,5 +113,6 @@ class Game:
             self.update()
 
             pygame.display.flip()
-            self.clock.tick(TICKRATE)
+            self.clock.tick(cfg.TICKRATE)
+
         self.score = self.score + self.head.turn_counter * 0.001

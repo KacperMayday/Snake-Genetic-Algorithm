@@ -1,5 +1,5 @@
 import pygame
-from config import snake_size, velocity
+import config as cfg
 from snake import positions
 
 
@@ -25,25 +25,25 @@ class Sensor:
         self.xchange = 0
         self.ychange = 0
         self.direction = position
-        distance = velocity
+        distance = cfg.velocity
         if position == 'up' or position == 'down':
             if position == 'up':
                 self.ychange = -distance
                 self.color = (255, 0, 0)
             else:
-                self.ychange = snake_size
+                self.ychange = cfg.snake_size
                 self.color = (255, 0, 0)
-            self.width = snake_size
+            self.width = cfg.snake_size
             self.height = distance
         else:
             if position == 'left':
                 self.xchange = -distance
                 self.color = (0, 0, 255)
             else:
-                self.xchange = snake_size
+                self.xchange = cfg.snake_size
                 self.color = (0, 0, 255)
             self.width = distance
-            self.height = snake_size
+            self.height = cfg.snake_size
 
         self.x = positions[-1][0]
         self.y = positions[-1][1]

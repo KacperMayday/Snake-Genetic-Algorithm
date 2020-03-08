@@ -1,4 +1,4 @@
-from config import SCREENHEIGHT, SCREENWIDTH, apple_size, velocity
+import config as cfg
 from random import randint
 import pygame
 
@@ -20,12 +20,12 @@ class Apple:
             updates apple's position on the screen
     """
 
-    size = apple_size
+    size = cfg.apple_size
     color = (250, 50, 5)
 
     def __init__(self):
-        self.x = randint(4 * velocity, SCREENWIDTH - self.size - 4 * velocity)
-        self.y = randint(4 * velocity, SCREENHEIGHT - self.size - 4 * velocity)
+        self.x = randint(4 * cfg.velocity, cfg.SCREENWIDTH - self.size - 4 * cfg.velocity)
+        self.y = randint(4 * cfg.velocity, cfg.SCREENHEIGHT - self.size - 4 * cfg.velocity)
         self.rect = pygame.Rect(self.x, self.y, self.size, self.size)
 
     def update(self, screen):
