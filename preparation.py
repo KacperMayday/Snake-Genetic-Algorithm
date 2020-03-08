@@ -1,24 +1,24 @@
+"""Module responsible to initialize random population
+
+Run this module to initialize random neural networks for your chosen population size. It is important to create
+networks before running main.py.
+
+The data will be stored in data/ directory which will be created during the proccess.
+
+If data directory is already created, whole directory will be erased and replaced with new random samples.
+To prevent your current samples from being replaced, rename your current data/ directory.
 """
-    Module responsible to initialize random population
-
-    Run this module to initialize random neural networks for your chosen population size. It is important to create
-    networks before running main.py.
-
-    The data will be stored in data/ directory which will be created during the proccess.
-
-    If data directory is already created, whole directory will be erased and replaced with new random samples.
-    To prevent your current samples from being replaced, rename your current data/ directory.
-"""
-
-from brain import Brain
-import torch
-from config import population_size
-from shutil import rmtree
 from os import mkdir
+from shutil import rmtree
+
+import torch
+
+import config as cfg
+import genetics
 
 
 def preparation():
-    confirm = input("Do you want to create {} random models? [y/n]".format(population_size))
+    confirm = input('Do you want to create %i random models? [y/n]' % cfg.POPULATION_SIZE)
 
     if confirm == 'y':
         try:
@@ -26,9 +26,9 @@ def preparation():
         except FileNotFoundError:
             pass
         mkdir('data')
-        for iterator in range(population_size):
-            temp = Brain()
-            torch.save(temp.state_dict(), 'data/' + str(iterator) + '.pt')
+        for iterator in range(cfg.POPULATION_SIZE):
+            temp = genetics.Brain()
+            torch.save(temp.state_dict(), 'data/{}.pt'.format(iterator))
 
         with open('data/track.txt', 'w') as file:
             file.write('')

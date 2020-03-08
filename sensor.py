@@ -1,6 +1,6 @@
 import pygame
 import config as cfg
-from snake import positions
+from objects import positions
 
 
 class Sensor:

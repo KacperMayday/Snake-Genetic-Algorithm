@@ -1,18 +1,26 @@
-from game import Game
-import config as cfg
-import pygame
 import statistics as st
+
+import pygame
+
+import config as cfg
+import game
 import genetics
 
 
-def check_errors():
-    if cfg.population_size % cfg.parents_size != 0:
+def constants_validation():
+    if cfg.POPULATION_SIZE % cfg.PARENTS_SIZE != 0:
         raise ValueError('Population size must be a multiplicity of parents size!')
+
+    if cfg.SIZE % cfg.VELOCITY != 0:
+        raise ValueError('Size must be a multiplicity of velocity!')
+
+    if cfg.VELOCITY > cfg.SIZE:
+        raise ValueError('Velocity must be lower than size!')
 
 
 def sort_best(score_array):
-    best_scores = [0] * cfg.parents_size
-    for it in range(cfg.parents_size):
+    best_scores = [0] * cfg.PARENTS_SIZE
+    for it in range(cfg.PARENTS_SIZE):
         best_scores[it] = scores.index(max(score_array))
         score_array[best_scores[it]] = -1
     best_scores.sort()
@@ -20,7 +28,7 @@ def sort_best(score_array):
 
 
 def check_if_win(score_array):
-    if max(score_array) >= 100 or st.mean(score_array) >= 50:
+    if max(score_array) >= cfg.WIN_MAX or st.mean(score_array) >= cfg.WIN_MEAN:
         exit()
 
 
@@ -56,8 +64,8 @@ def append_stats(score_array):
                                                    best_average_epoch))
 
 
-if __name__ == "__main__":
-    check_errors()
+if __name__ == '__main__':
+    constants_validation()
     pygame.init()
 
     thebest = 0
@@ -65,12 +73,13 @@ if __name__ == "__main__":
     best_average = 0
     best_average_epoch = 0
 
-    for epoch in range(cfg.epoch_number):
+    for epoch in range(cfg.EPOCHS):
         scores = []
-        for phase in range(cfg.population_size):
-            pygame.display.set_caption('{}/{}'.format(str(phase + 1), str(cfg.population_size)))
-            game = Game(phase)
-            scores.append(game.score)
+        for phase in range(cfg.POPULATION_SIZE):
+            pygame.display.set_caption('{}/{}'.format(str(phase + 1), str(cfg.POPULATION_SIZE)))
+            screen = pygame.display.set_mode((cfg.SCREENWIDTH, cfg.SCREENHEIGHT))
+            current_game = game.Game(phase, screen)
+            scores.append(current_game.score)
 
         append_stats(scores)
         check_if_win(scores)
