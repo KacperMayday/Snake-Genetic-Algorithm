@@ -9,8 +9,8 @@ If data directory is already created, whole directory will be erased and replace
 To prevent your current samples from being replaced, rename your current data/ directory.
 """
 
-from os import mkdir
-from shutil import rmtree
+import os
+import shutil
 
 import torch
 
@@ -19,14 +19,17 @@ import genetics
 
 
 def preparation():
-    # confirm = input('Do you want to create %i random models? [y/n]' % cfg.POPULATION_SIZE)
+    """Initializes random population and save it in data directory."""
+
+    # confirm = input('Do you want to create {} random models? [y/n]'.format(cfg.POPULATION_SIZE))
     confirm = 'y'  # for testing
     if confirm == 'y':
         try:
-            rmtree('data')
+            shutil.rmtree('data')
         except FileNotFoundError:
             pass
-        mkdir('data')
+        os.mkdir('data')
+
         for iterator in range(cfg.POPULATION_SIZE):
             temp = genetics.Brain()
             torch.save(temp.state_dict(), 'data/{}.pt'.format(iterator))
@@ -38,8 +41,9 @@ def preparation():
             with open('data/track.txt', 'a') as track:
                 for line in config:
                     track.write(line)
-                track.write('\n<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<Training>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n')
+                track.write('\n<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<Training>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n')
                 track.write('\nEpoch;Best;Average;TheBestScore;BestEpoch;BestAverage;BestAverageEpoch\n')
+
         print('Process done')
 
 

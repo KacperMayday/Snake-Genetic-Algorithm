@@ -9,7 +9,7 @@ import objects as obj
 
 
 class Game:
-    """Main game class called from start.py.
+    """Main game class called from main.py.
 
     This class maintains most of the functions in the game i.e. collisions,
     game loop, scoring and updating the screen. It calls all constructors from
@@ -174,9 +174,8 @@ class Game:
             pressed = pygame.key.get_pressed()  # detects whether escape or space has been pressed,
             if pressed[pygame.K_ESCAPE]:        # to exit or pause the game
                 self.run = False
-            '''if pressed[pygame.K_SPACE]:
-                pause = True
-                '''
+            # if pressed[pygame.K_SPACE]:
+            #     pause = True
 
             while pause:  # pause loop
                 for event in pygame.event.get():

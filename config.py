@@ -24,7 +24,7 @@ MUTATION_FREQUENCY : int
 CROSSING_PROBABILITY : int
     Probability of exchanging each chromosome with second parent during crossing_over stage.
 EPOCHS : int
-    Number of epochs during training.
+    Number of epochs during training. Set to 1 if you want to enter show mode.
 WIN_MAX, WIN_MEAN : int
     Winning conditions, program stops upon reaching them.
 """
@@ -40,6 +40,6 @@ IDLE_TIME = 2500
 MUTATION_RATE = 15
 MUTATION_FREQUENCY = 30
 CROSSING_PROBABILITY = 10
-EPOCHS = 100
+EPOCHS = 1
 WIN_MAX = 75
 WIN_MEAN = 40
