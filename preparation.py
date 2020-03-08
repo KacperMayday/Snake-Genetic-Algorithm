@@ -18,8 +18,8 @@ import genetics
 
 
 def preparation():
-    confirm = input('Do you want to create %i random models? [y/n]' % cfg.POPULATION_SIZE)
-
+    # confirm = input('Do you want to create %i random models? [y/n]' % cfg.POPULATION_SIZE)
+    confirm = 'y'  # for testing
     if confirm == 'y':
         try:
             rmtree('data')

@@ -1,4 +1,4 @@
-"""Configuration file containing global variables and hyperparameters
+"""Configuration file containing global variables and hyperparameters.
 
 Parameters
 ----------
@@ -29,17 +29,17 @@ WIN_MAX, WIN_MEAN : int
     Winning conditions, program stops upon reaching them.
 """
 
-SCREENWIDTH = 800
-SCREENHEIGHT = 600
-TICKRATE = 60
-VELOCITY = 5
-SIZE = 20
-POPULATION_SIZE = 2
-PARENTS_SIZE = 2
-IDLE_TIME = 5000
-MUTATION_RATE = 300
+SCREENWIDTH = 50
+SCREENHEIGHT = 50
+TICKRATE = 100000
+VELOCITY = 1
+SIZE = 2
+POPULATION_SIZE = 1000
+PARENTS_SIZE = 10
+IDLE_TIME = 2500
+MUTATION_RATE = 15
 MUTATION_FREQUENCY = 30
 CROSSING_PROBABILITY = 10
-EPOCHS = 2
-WIN_MAX = 100
-WIN_MEAN = 50
+EPOCHS = 100
+WIN_MAX = 75
+WIN_MEAN = 40

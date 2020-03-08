@@ -38,11 +38,13 @@ class Snake:
     def __init__(self, number):
         self.number = number
         global POSITIONS
+
         try:
             if self.number == 0:
                 raise IndexError
             self.x = POSITIONS[-self.number * self.positioner - 1][0]
             self.y = POSITIONS[-self.number * self.positioner - 1][1]
+
         except IndexError:
             self.x = cfg.SCREENWIDTH // 2
             self.y = cfg.SCREENHEIGHT // 2
@@ -166,7 +168,7 @@ class Sensor:
         self.xchange = 0
         self.ychange = 0
         self.direction = position
-        distance = cfg.VELOCITY
+        distance = 2 * cfg.VELOCITY
         if position == 'up' or position == 'down':
             if position == 'up':
                 self.ychange = -distance

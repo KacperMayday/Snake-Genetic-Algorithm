@@ -1,3 +1,5 @@
+"""Main class responsible for running the game."""
+
 import pygame
 import torch
 
@@ -7,11 +9,25 @@ import objects as obj
 
 
 class Game:
-    clock = pygame.time.Clock()
+    """Main game class called from start.py.
+
+    This class maintains most of the functions in the game i.e. collisions,
+    game loop, scoring and updating the screen. It calls all constructors from
+    objects.py and load neural network parameters based on current phase.
+
+    """
 
     def __init__(self, phase, screen):
+        """Initialize the game for given phase.
+
+        Args:
+            phase (int):
+            screen():
+        """
+
         self.run = True
         self.screen = screen
+        self.clock = pygame.time.Clock()
         self.score = 0
         self.head = obj.Snake(self.score)
         self.apple = obj.Apple()
@@ -75,7 +91,9 @@ class Game:
                 if pygame.Rect.colliderect(sensor.rect, body.rect):
                     activation = 1
                     break
+            inputs.append(activation)
 
+            activation = 0
             if sensor.x <= 0 or sensor.x >= cfg.SCREENWIDTH or sensor.y <= 0 or sensor.y >= cfg.SCREENHEIGHT:
                 activation = 1
 
@@ -94,8 +112,8 @@ class Game:
             pressed = pygame.key.get_pressed()
             if pressed[pygame.K_ESCAPE]:
                 self.run = False
-            if pressed[pygame.K_SPACE]:
-                pause = True
+            '''if pressed[pygame.K_SPACE]:
+                pause = True'''
             while pause:
                 for event in pygame.event.get():
                     if event.type == pygame.QUIT:

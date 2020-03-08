@@ -76,7 +76,7 @@ if __name__ == '__main__':
     for epoch in range(cfg.EPOCHS):
         scores = []
         for phase in range(cfg.POPULATION_SIZE):
-            pygame.display.set_caption('{}/{}'.format(str(phase + 1), str(cfg.POPULATION_SIZE)))
+            pygame.display.set_caption('{}/{}'.format(phase + 1, cfg.POPULATION_SIZE))
             screen = pygame.display.set_mode((cfg.SCREENWIDTH, cfg.SCREENHEIGHT))
             current_game = game.Game(phase, screen)
             scores.append(current_game.score)

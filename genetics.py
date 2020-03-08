@@ -105,14 +105,16 @@ class Brain(nn.Module):
         direction: [up, right, down, left]. Maximum value is converted to one and the rest to zero.
     """
 
-    in_nodes = 8
-    hidden_nodes = 6
+    in_nodes = 12
+    hidden_nodes = 8
     out_nodes = 4
 
     def __init__(self):
         super(Brain, self).__init__()
-        self.net = nn.Sequential(nn.Linear(self.in_nodes, self.out_nodes),
-                                 nn.Sigmoid())
+        self.net = nn.Sequential(nn.Linear(self.in_nodes, self.hidden_nodes),
+                                 nn.Tanh(),
+                                 nn.Linear(self.hidden_nodes, self.out_nodes),
+                                 nn.Tanh())
 
     def forward(self, inputs):
         inputs = torch.tensor(inputs).float()
