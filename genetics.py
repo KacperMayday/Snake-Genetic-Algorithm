@@ -1,3 +1,5 @@
+"""Module responsible for handling genetic algorithm functions and neural network"""
+
 from random import randint
 
 import torch
@@ -7,6 +9,14 @@ import config as cfg
 
 
 def save_best(list_of_bests):
+    """
+
+    Parameter
+    ---------
+    list_of_bests : list
+
+    """
+
     for iterator in range(len(list_of_bests)):
         model_file = 'data/{}.pt'.format(list_of_bests[iterator])
         temp = Brain()
@@ -15,6 +25,19 @@ def save_best(list_of_bests):
 
 
 def crossing_over(first_parent, second_parent):
+    """
+    Parameters
+    ----------
+    first_parent : obj
+
+    second_parent : obj
+
+    Returns
+    -------
+    child : obj
+
+    """
+
     child = Brain()
     for layer_name, _ in child.named_parameters():
         child_params = child.state_dict()[layer_name]
@@ -42,6 +65,14 @@ def crossing_over(first_parent, second_parent):
 
 
 def mutation(model):
+    """
+
+    Parameter
+    ---------
+    model : obj
+
+    """
+
     for layer_name, _ in model.named_parameters():
         layer_params = model.state_dict()[layer_name]
         for tensor in range(len(layer_params)):
@@ -62,6 +93,20 @@ def mutation(model):
 
 
 def breeding(first_parent, second_parent, file_number):
+    """
+
+    Parameters
+    ----------
+    first_parent : obj
+    second_parent : obj
+    file_number : int
+
+    Returns
+    -------
+    file_number : int
+
+    """
+
     half_offset = (cfg.POPULATION_SIZE - cfg.PARENTS_SIZE) // cfg.PARENTS_SIZE
 
     for iterator in range(half_offset):
@@ -77,6 +122,10 @@ def breeding(first_parent, second_parent, file_number):
 
 
 def mating():
+    """
+
+    """
+
     counter = cfg.PARENTS_SIZE
     for it in range(0, cfg.PARENTS_SIZE, 2):
         first = Brain()
@@ -91,12 +140,14 @@ class Brain(nn.Module):
 
     Attributes
     ----------
-    in_nodes : int
+    self.in_nodes : int
         number of input nodes / features for the network
-    hidden_nodes : int
+    self.hidden_nodes : int
         number of hidden nodes
-    out_nodes : int
+    self.out_nodes : int
         number of output nodes, corresponds to four main directions
+    self.net : obj
+
 
     Methods
     -------
@@ -117,6 +168,18 @@ class Brain(nn.Module):
                                  nn.Tanh())
 
     def forward(self, inputs):
+        """
+
+        Parameter
+        ---------
+        inputs : list
+
+        Returns
+        -------
+        output : list
+
+        """
+
         inputs = torch.tensor(inputs).float()
 
         output = [0] * 4

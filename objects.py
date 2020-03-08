@@ -1,3 +1,5 @@
+"""Module containing objects used in the game"""
+
 from random import randint
 
 import pygame
@@ -56,6 +58,14 @@ class Snake:
         self.turn_counter = 0
 
     def move(self, inputs):
+        """
+
+        Parameter
+        ---------
+        inputs : list
+
+        """
+
         xtemp = self.xvelocity
         ytemp = self.yvelocity
 
@@ -106,10 +116,26 @@ class Snake:
         POSITIONS.append((self.x, self.y))
 
     def update(self, screen):
+        """
+
+        Parameter
+        ---------
+        screen : obj
+
+        """
+
         self.rect = pygame.Rect(self.x, self.y, self.size, self.size)
         pygame.draw.rect(screen, self.color, self.rect)
 
     def body_move(self, screen):
+        """
+
+        Parameter
+        ---------
+        screen : obj
+
+        """
+
         try:
             self.x = POSITIONS[-self.number*self.positioner - 1][0]
             self.y = POSITIONS[-self.number*self.positioner - 1][1]
@@ -123,10 +149,14 @@ class Apple:
 
     Attributes
     ----------
-    size : int
+    self.size : int
         apple's size in pixels
-    color : tuple
+    self.color : tuple
         color of the apple in RGB format
+    self.x, self.y : int
+
+    self.rect : obj
+
 
     Methods
     -------
@@ -143,6 +173,13 @@ class Apple:
         self.rect = pygame.Rect(self.x, self.y, self.size, self.size)
 
     def update(self, screen):
+        """
+        Parameter
+        ---------
+        screen : obj
+
+        """
+
         self.rect = pygame.Rect(self.x, self.y, self.size, self.size)
         pygame.draw.rect(screen, self.color, self.rect)
 
@@ -192,6 +229,13 @@ class Sensor:
         self.rect = None
 
     def update(self, screen):
+        """
+        
+        Parameter
+        ---------
+        screen : obj
+        """
+
         self.x = POSITIONS[-1][0]
         self.y = POSITIONS[-1][1]
         self.x += self.xchange

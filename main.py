@@ -40,9 +40,10 @@ def sort_best(score_array):
 
     Returns
     -------
-    list
+    best_scores : list
         list of best neural networks' IDs
     """
+
     best_scores = [0] * cfg.PARENTS_SIZE
     for it in range(cfg.PARENTS_SIZE):
         best_scores[it] = scores.index(max(score_array))
@@ -59,6 +60,7 @@ def check_if_win(score_array):
     score_array : list
         unsorted list of scores achieved by current generation
     """
+
     if max(score_array) >= cfg.WIN_MAX or st.mean(score_array) >= cfg.WIN_MEAN:
         exit()
 
@@ -71,6 +73,7 @@ def append_stats(score_array):
     score_array : list
         unsorted list of scores achieved by current generation
     """
+
     global best, best_epoch, best_average, best_average, best_average_epoch
 
     if max(score_array) > best:

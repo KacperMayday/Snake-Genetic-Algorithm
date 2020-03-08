@@ -14,7 +14,6 @@ class Game:
     This class maintains most of the functions in the game i.e. collisions,
     game loop, scoring and updating the screen. It calls all constructors from
     objects.py and load neural network parameters based on current phase.
-
     """
 
     def __init__(self, phase, screen):
@@ -80,8 +79,8 @@ class Game:
         screen boundaries is detected, terminates self.loop method. The same thing happens
         when snake fails to catch an apple in time equals IDLE_TIME constant. If so, turn
         counter is set to 0 to eliminate snake's with looping behaviour.
-
         """
+
         if pygame.Rect.colliderect(self.head.rect, self.apple.rect):  # checks apple - snake's head collision
             self.apple = obj.Apple()  # creates new apple object
             self.score += 1  # increment the score
@@ -119,7 +118,7 @@ class Game:
 
         Returns
         -------
-        list
+        inputs : list
             a list of binary inputs representing each detected feature
         """
 
@@ -157,7 +156,7 @@ class Game:
 
         Returns
         -------
-        float
+        self.score : float
             weighted sum of the score and turn counter
         """
 
