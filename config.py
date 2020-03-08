@@ -1,7 +1,7 @@
 """Configuration file containing global variables and hyperparameters.
 
-Parameters
-----------
+Constants
+---------
 SCREENWIDTH, SCREENHEIGHT : int
     Screen resolution parameters. For training purpose I recommend setting as small values
     as possible to make the proccess faster.

@@ -79,7 +79,7 @@ if __name__ == '__main__':
             pygame.display.set_caption('{}/{}'.format(phase + 1, cfg.POPULATION_SIZE))
             screen = pygame.display.set_mode((cfg.SCREENWIDTH, cfg.SCREENHEIGHT))
             current_game = game.Game(phase, screen)
-            scores.append(current_game.score)
+            scores.append(current_game.loop())
 
         append_stats(scores)
         check_if_win(scores)

@@ -8,6 +8,7 @@ The data will be stored in data/ directory which will be created during the proc
 If data directory is already created, whole directory will be erased and replaced with new random samples.
 To prevent your current samples from being replaced, rename your current data/ directory.
 """
+
 from os import mkdir
 from shutil import rmtree
 
