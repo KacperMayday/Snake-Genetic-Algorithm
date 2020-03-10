@@ -3,7 +3,7 @@
 Run this module to initialize random neural networks for your chosen population size. It is important to create
 networks before running main.py.
 
-The data will be stored in data/ directory which will be created during the proccess. Each neural network
+The data will be stored in data/ directory which will be created during the process. Each neural network
 has its own ID ranging from 0 to cfg.POPULATION_SIZE.
 
 If data directory is already created, whole directory will be erased and replaced with new random samples.
@@ -22,8 +22,8 @@ import genetics
 def preparation():
     """Initializes random population and save it in data directory."""
 
-    # confirm = input('Do you want to create {} random models? [y/n]'.format(cfg.POPULATION_SIZE))
-    confirm = 'y'  # for testing
+    confirm = input('Do you want to create {} random models? [y/n]'.format(cfg.POPULATION_SIZE))
+
     if confirm == 'y':  # request user confirmation to prevent data overwriting
         try:
             shutil.rmtree('data')

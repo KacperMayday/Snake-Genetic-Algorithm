@@ -4,7 +4,7 @@ Constants
 ---------
 SCREENWIDTH, SCREENHEIGHT : int
     Screen resolution parameters. For training purpose I recommend setting as small values
-    as possible to make the proccess faster.
+    as possible to make the process faster.
 TICKRATE: int
     Indicates maximum frames per second. For training set to very high value, otherwise 30-60 is recommended.
 VELOCITY : int
