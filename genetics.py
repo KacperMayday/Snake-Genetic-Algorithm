@@ -9,12 +9,13 @@ import config as cfg
 
 
 def save_best(list_of_bests):
-    """
+    """Saves best models in the first N files in data directory, where N is
+    equal to cfg.PARENTS_SIZE.
 
     Parameter
     ---------
     list_of_bests : list
-
+        list of best networks' IDs
     """
 
     for iterator in range(len(list_of_bests)):
@@ -28,14 +29,13 @@ def crossing_over(first_parent, second_parent):
     """
     Parameters
     ----------
-    first_parent : obj
-
-    second_parent : obj
+    first_parent, second_parent : obj
+        two neural network models
 
     Returns
     -------
     child : obj
-
+        new neural network which is the result of combining and mutating parents' networks together
     """
 
     child = Brain()
@@ -65,12 +65,12 @@ def crossing_over(first_parent, second_parent):
 
 
 def mutation(model):
-    """
+    """Adds noise to model's parameters.
 
     Parameter
     ---------
     model : obj
-
+        neural network which parameters are altered
     """
 
     for layer_name, _ in model.named_parameters():
@@ -98,8 +98,11 @@ def breeding(first_parent, second_parent, file_number):
     Parameters
     ----------
     first_parent : obj
+
     second_parent : obj
+
     file_number : int
+    
 
     Returns
     -------

@@ -46,7 +46,7 @@ def sort_best(score_array):
 
     best_scores = [0] * cfg.PARENTS_SIZE
     for it in range(cfg.PARENTS_SIZE):
-        best_scores[it] = scores.index(max(score_array))
+        best_scores[it] = score_array.index(max(score_array))
         score_array[best_scores[it]] = -1
     best_scores.sort()
     return best_scores
@@ -65,77 +65,102 @@ def check_if_win(score_array):
         exit()
 
 
-def append_stats(score_array):
+def append_stats(score_array, epoch, best_score, best_epoch, best_average, best_average_epoch):
     """Prints last generation's results and appends it to track.txt.
 
     Parameters
     ----------
     score_array : list
         unsorted list of scores achieved by current generation
+    epoch : int
+        epoch number
+    best_score : int
+        best score overall
+    best_epoch : int
+        epoch in which best score has been achieved
+    best_average : int
+        best average score in generation
+    best_average_epoch : int
+        epoch in which best average score has been achieved
     """
-
-    global best, best_epoch, best_average, best_average, best_average_epoch
-
-    if max(score_array) > best:
-        best = max(score_array)
-        best_epoch = epoch + 1
-
-    if st.mean(score_array) > best_average:
-        best_average = st.mean(score_array)
-        best_average_epoch = epoch + 1
 
     print('Epoch: {}'.format(epoch + 1),
           'Best: {}'.format(max(score_array)),
           'Average: {}'.format(st.mean(score_array)),
-          'The Best: {} in epoch {}'.format(best, best_epoch),
+          'The Best: {} in epoch {}'.format(best_score, best_epoch),
           'Best Average: {} in epoch {}'.format(best_average, best_average_epoch))
 
     with open('data/track.txt', 'a') as file:
         file.write('{};{};{};{};{};{};{}\n'.format(epoch + 1,
                                                    max(score_array),
                                                    st.mean(score_array),
-                                                   best,
+                                                   best_score,
                                                    best_epoch,
                                                    best_average,
                                                    best_average_epoch))
+
+
+def run_generation():
+    """Runs all individuals in the population.
+
+    Returns
+    -------
+    score_array : list
+        list of scores achieved by each neural network in generation.
+    """
+    score_array = []
+    for phase in range(cfg.POPULATION_SIZE):
+        pygame.display.set_caption('{}/{}'.format(phase + 1, cfg.POPULATION_SIZE))
+        screen = pygame.display.set_mode((cfg.SCREENWIDTH, cfg.SCREENHEIGHT))
+        current_game = game.Game(phase, screen)
+        score_array.append(current_game.loop())
+    return score_array
+
+
+def show_mode():
+    """Show mode without genetic algorithm. Used only for displaying the results"""
+    loop = input('How many times you want to display last population?')
+    try:
+        loop = int(loop)
+    except ValueError:
+        print('Invalid number!')
+
+    for iterator in range(loop):
+        scores = run_generation()
+
+        print('Best: {} Average: {}'.format(max(scores), st.mean(scores)))
+
+
+def training_mode():
+    """Training mode with genetic algorithm applied. Used to train the population."""
+    best_score = 0
+    best_epoch = 0
+    best_average = 0
+    best_average_epoch = 0
+
+    for epoch in range(cfg.EPOCHS):
+        scores = run_generation()
+        if max(scores) > best_score:
+            best_score = max(scores)
+            best_epoch = epoch + 1
+
+        if st.mean(scores) > best_average:
+            best_average = st.mean(scores)
+            best_average_epoch = epoch + 1
+
+        append_stats(scores, epoch, best_score, best_epoch, best_average, best_average_epoch)
+        check_if_win(scores)
+        best = sort_best(scores)
+        genetics.save_best(best)
+        genetics.mating()
 
 
 if __name__ == '__main__':
     constants_validation()  # checks constants
     pygame.init()  # initialize pygame
 
-    best_score = 0
-    best_epoch = 0
-    best_average = 0
-    best_average_epoch = 0
+    if cfg.EPOCHS == 1:  # show mode without genetic algorithm
+        show_mode()
 
-    if cfg.EPOCHS == 1:  # show mode
-        loop = input('How many times you want to display last population?')
-        try:
-            loop = int(loop)
-        except ValueError:
-            print('Invalid number!')
-
-        for iterator in range(loop):
-            scores = []
-            for phase in range(cfg.POPULATION_SIZE):
-                pygame.display.set_caption('{}/{}'.format(phase + 1, cfg.POPULATION_SIZE))
-                screen = pygame.display.set_mode((cfg.SCREENWIDTH, cfg.SCREENHEIGHT))
-                current_game = game.Game(phase, screen)
-                scores.append(current_game.loop())
-            print('Best: {} Average: {}'.format(max(scores), st.mean(scores)))
-
-    else:  # training mode
-        for epoch in range(cfg.EPOCHS):
-            scores = []
-            for phase in range(cfg.POPULATION_SIZE):
-                pygame.display.set_caption('{}/{}'.format(phase + 1, cfg.POPULATION_SIZE))
-                screen = pygame.display.set_mode((cfg.SCREENWIDTH, cfg.SCREENHEIGHT))
-                current_game = game.Game(phase, screen)
-                scores.append(current_game.loop())
-
-            append_stats(scores)
-            check_if_win(scores)
-            best = sort_best(scores)
-            genetics.save_best(best)
-            genetics.mating()
+    else:  # training mode with genetic algorithm
+        training_mode()
