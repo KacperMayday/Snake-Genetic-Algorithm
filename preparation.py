@@ -38,7 +38,7 @@ def preparation():
         with open('data/track.txt', 'w') as file:
             file.write('')
 
-        with open('config.py', 'r') as config:
+        with open('config.py') as config:
             with open('data/track.txt', 'a') as track:
                 for line in config:
                     track.write(line)
