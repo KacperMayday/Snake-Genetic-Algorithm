@@ -60,13 +60,19 @@ class Snake:
             self.y = cfg.SCREENHEIGHT // 2
             POSITIONS.clear()
             POSITIONS.append((self.x, self.y))
+            self.rect = pygame.Rect(self.x, self.y, self.size, self.size)
         else:
-            self.x = None
-            self.y = None
+            try:
+                self.x = POSITIONS[-self.number * self.positioner - 1][0]
+                self.y = POSITIONS[-self.number * self.positioner - 1][1]
+                self.rect = pygame.Rect(self.x, self.y, self.size, self.size)
+            except IndexError:
+                self.x = -self.size
+                self.y = -self.size
+                self.rect = pygame.Rect(self.x, self.y, self.size, self.size)  # temporary rect
 
         self.xvelocity = 0
         self.yvelocity = 0
-        self.rect = None
         self.turn_counter = 0
 
     def move(self, inputs):
@@ -114,31 +120,31 @@ class Snake:
         # Uncomment this block below to have control over snake's head:
         # pressed = pygame.key.get_pressed()
         # if pressed[pygame.K_UP]:
-        #     self.yvelocity = -velocity
+        #     self.yvelocity = -cfg.VELOCITY
         #     self.xvelocity = 0
         # elif pressed[pygame.K_DOWN]:
-        #     self.yvelocity = velocity
+        #     self.yvelocity = cfg.VELOCITY
         #     self.xvelocity = 0
         # elif pressed[pygame.K_RIGHT]:
-        #     self.xvelocity = velocity
+        #     self.xvelocity = cfg.VELOCITY
         #     self.yvelocity = 0
         # elif pressed[pygame.K_LEFT]:
-        #     self.xvelocity = -velocity
+        #     self.xvelocity = -cfg.VELOCITY
         #     self.yvelocity = 0
         # self.x += self.xvelocity
         # self.y += self.yvelocity
 
         # Uncomment this block to enable wall teleports
         # Remember to comment necessary game condition!
-        # if self.x > SCREENWIDTH + self.size:
-        #     self.x += -SCREENWIDTH - 2 * self.size
+        # if self.x > cfg.SCREENWIDTH + self.size:
+        #     self.x += -cfg.SCREENWIDTH - 2 * self.size
         # elif self.x < -self.size:
-        #     self.x += SCREENWIDTH + self.size
+        #     self.x += cfg.SCREENWIDTH + self.size
         #
-        # if self.y > SCREENHEIGHT + self.size:
-        #     self.y += -SCREENHEIGHT - 2 * self.size
+        # if self.y > cfg.SCREENHEIGHT + self.size:
+        #     self.y += -cfg.SCREENHEIGHT - 2 * self.size
         # elif self.y < -self.size:
-        #     self.y += SCREENHEIGHT + self.size
+        #     self.y += cfg.SCREENHEIGHT + self.size
 
         # DO NOT comment these two lines
         global POSITIONS
@@ -265,9 +271,9 @@ class Sensor:
             self.width = distance
             self.height = cfg.SIZE
 
-        self.x = None
-        self.y = None
-        self.rect = None
+        self.x = POSITIONS[-1][0]
+        self.y = POSITIONS[-1][1]
+        self.rect = pygame.Rect(self.x, self.y, self.width, self.height)
 
     def update(self, screen):
         """Updates sensor's position on the screen.

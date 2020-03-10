@@ -60,14 +60,14 @@ class Game:
 
         self.head.update(self.screen)
 
+        for sensor in self.sensors:
+            sensor.update(self.screen)
+
         for body in self.body_list:
             body.body_move()
             body.update(self.screen)
 
         self.apple.update(self.screen)
-
-        for sensor in self.sensors:
-            sensor.update(self.screen)
 
     def check(self):
         """Checks all game conditions.
@@ -136,12 +136,10 @@ class Game:
                 if pygame.Rect.colliderect(sensor.rect, body.rect):
                     activation = 1
                     break
-            inputs.append(activation)
-
-            activation = 0
-            if (sensor.x <= 0 or sensor.x >= cfg.SCREENWIDTH or   # checks if sensor is beyond the screen
-                    sensor.y <= 0 or sensor.y >= cfg.SCREENHEIGHT):
-                activation = 1
+            if activation == 0:
+                if (sensor.x <= 0 or sensor.x >= cfg.SCREENWIDTH or   # checks if sensor is beyond the screen
+                        sensor.y <= 0 or sensor.y >= cfg.SCREENHEIGHT):
+                    activation = 1
 
             inputs.append(activation)
         return inputs
@@ -172,8 +170,8 @@ class Game:
             pressed = pygame.key.get_pressed()  # detects whether escape or space has been pressed,
             if pressed[pygame.K_ESCAPE]:        # to exit or pause the game
                 self.run = False
-            # if pressed[pygame.K_SPACE]:
-            #     pause = True
+            if pressed[pygame.K_SPACE]:
+                pause = True
 
             while pause:  # pause loop
                 for event in pygame.event.get():

@@ -6,6 +6,9 @@ networks before running main.py.
 The data will be stored in data/ directory which will be created during the process. Each neural network
 has its own ID ranging from 0 to cfg.POPULATION_SIZE.
 
+For new population file track.txt is created. It consists config global variables as well as each generation's
+statistics for further analysis.
+
 If data directory is already created, whole directory will be erased and replaced with new random samples.
 To prevent your current samples from being replaced, rename your current data/ directory.
 """

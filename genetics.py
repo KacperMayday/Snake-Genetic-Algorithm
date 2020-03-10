@@ -79,6 +79,11 @@ def mutation(model):
     ---------
     model : obj
         neural network which parameters are to be altered
+
+    Returns
+    -------
+    model : obj
+        altered neural network
     """
 
     for layer_name, _ in model.named_parameters():
@@ -99,6 +104,7 @@ def mutation(model):
                 if probability <= cfg.MUTATION_FREQUENCY:
                     layer_params[tensor] = layer_params[tensor] + layer_params[tensor] * (change / 1000)
         model.state_dict()[layer_name] = layer_params
+    return model
 
 
 def breeding(first_parent, second_parent, file_number):
@@ -127,14 +133,14 @@ def breeding(first_parent, second_parent, file_number):
     half_offset = (cfg.POPULATION_SIZE - cfg.PARENTS_SIZE) // cfg.PARENTS_SIZE
 
     for iterator in range(half_offset):
-        child_first = crossing_over(first_parent, second_parent)
-        mutation(child_first)
-        torch.save(child_first.state_dict(), 'data/{}.pt'.format(file_number))
+        child = crossing_over(first_parent, second_parent)
+        child = mutation(child)
+        torch.save(child.state_dict(), 'data/{}.pt'.format(file_number))
         file_number += 1
 
-        child_second = crossing_over(second_parent, first_parent)
-        mutation(child_second)
-        torch.save(child_second.state_dict(), 'data/{}.pt'.format(file_number))
+        child = crossing_over(second_parent, first_parent)
+        child = mutation(child)
+        torch.save(child.state_dict(), 'data/{}.pt'.format(file_number))
         file_number += 1
 
     return file_number
@@ -177,13 +183,11 @@ class Brain(nn.Module):
     def __init__(self):
         super(Brain, self).__init__()
 
-        self.in_nodes = 12
-        self.hidden_nodes = 8
+        self.in_nodes = 8
+        # self.hidden_nodes = 8
         self.out_nodes = 4
         
-        self.net = nn.Sequential(nn.Linear(self.in_nodes, self.hidden_nodes),
-                                 nn.Tanh(),
-                                 nn.Linear(self.hidden_nodes, self.out_nodes),
+        self.net = nn.Sequential(nn.Linear(self.in_nodes, self.out_nodes),
                                  nn.Tanh())
 
     def forward(self, inputs):
