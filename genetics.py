@@ -26,16 +26,20 @@ def save_best(list_of_bests):
 
 
 def crossing_over(first_parent, second_parent):
-    """
+    """Randomly exchanges chromosomes between parents.
+
+    Each value from each layer in model's parameters is a chromosome which has
+    a chance to be replaced, where probability is defined by cfg.CROSSING_PROBABILITY.
+
     Parameters
     ----------
     first_parent, second_parent : obj
-        two neural network models
+        neural network objects
 
     Returns
     -------
     child : obj
-        new neural network which is the result of combining and mutating parents' networks together
+        new neural network which is the result of combining parents' networks together
     """
 
     child = Brain()
@@ -60,23 +64,27 @@ def crossing_over(first_parent, second_parent):
                     child_params[tensor] = first_params[tensor]
 
         child.state_dict()[layer_name] = child_params
-    mutation(child)
+
     return child
 
 
 def mutation(model):
     """Adds noise to model's parameters.
 
+    Every value in model's parameters has a chance to be altered by random percent.
+    Because weight tensor is one more level "nested" than bias tensor, both should
+    be handled in slightly different way.
+
     Parameter
     ---------
     model : obj
-        neural network which parameters are altered
+        neural network which parameters are to be altered
     """
 
     for layer_name, _ in model.named_parameters():
         layer_params = model.state_dict()[layer_name]
         for tensor in range(len(layer_params)):
-            try:
+            try:  # when tensor is weight tensor
                 for value in range(len(layer_params[tensor])):
                     probability = randint(1, 100)
                     change = randint(-cfg.MUTATION_RATE, cfg.MUTATION_RATE)
@@ -84,7 +92,8 @@ def mutation(model):
                         layer_params[tensor][value] = layer_params[tensor][value] \
                                                       + layer_params[tensor][value] \
                                                       * (change / 1000)
-            except TypeError:
+
+            except TypeError:  # when tensor is bias tensor
                 probability = randint(1, 100)
                 change = randint(-cfg.MUTATION_RATE, cfg.MUTATION_RATE)
                 if probability <= cfg.MUTATION_FREQUENCY:
@@ -93,31 +102,38 @@ def mutation(model):
 
 
 def breeding(first_parent, second_parent, file_number):
-    """
+    """Performs breeding between given pair of individuals.
+
+    Creates set of individuals by combining parents' chromosomes
+    and saves offset to data directory. Because it matters which parent
+    is first, two situations must be performed each producing half of
+    the final offset.
 
     Parameters
     ----------
     first_parent : obj
-
+        first parent neural network object
     second_parent : obj
-
+        second parent neural network object
     file_number : int
-    
+        file number where offset is saved
 
     Returns
     -------
     file_number : int
-
+        next free file number ready to be used
     """
 
     half_offset = (cfg.POPULATION_SIZE - cfg.PARENTS_SIZE) // cfg.PARENTS_SIZE
 
     for iterator in range(half_offset):
         child_first = crossing_over(first_parent, second_parent)
+        mutation(child_first)
         torch.save(child_first.state_dict(), 'data/{}.pt'.format(file_number))
         file_number += 1
 
         child_second = crossing_over(second_parent, first_parent)
+        mutation(child_second)
         torch.save(child_second.state_dict(), 'data/{}.pt'.format(file_number))
         file_number += 1
 
@@ -125,9 +141,7 @@ def breeding(first_parent, second_parent, file_number):
 
 
 def mating():
-    """
-
-    """
+    """Chooses pairs of individuals for breeding."""
 
     counter = cfg.PARENTS_SIZE
     for it in range(0, cfg.PARENTS_SIZE, 2):
@@ -139,7 +153,7 @@ def mating():
 
 
 class Brain(nn.Module):
-    """Neural Network class to control snake movement
+    """Neural Network class to control snake movement.
 
     Attributes
     ----------
@@ -150,13 +164,14 @@ class Brain(nn.Module):
     self.out_nodes : int
         number of output nodes, corresponds to four main directions
     self.net : obj
-
+        object representing neural network architecture
 
     Methods
     -------
     forward(inputs)
-        returns the output array of the network, where each element corresponds to each
-        direction: [up, right, down, left]. Maximum value is converted to one and the rest to zero.
+        returns the output array of the network, where each element corresponds
+        to each direction: [up, right, down, left]. Maximum value is converted
+        to one and the rest to zero
     """
 
     in_nodes = 12
@@ -171,23 +186,29 @@ class Brain(nn.Module):
                                  nn.Tanh())
 
     def forward(self, inputs):
-        """
+        """Model's forwarding method which produces outputs.
+
+        Outputs array in one-hot meaning that every element is binary value
+        and only one element is equal 1. Position of 1 determines direction
+        which snake will follow.
 
         Parameter
         ---------
         inputs : list
+            list of inputs gathered by Game(). Check Game's get_inputs method
+            for more information
 
         Returns
         -------
-        output : list
-
+        outputs : list
+            one-hot list representing chosen next move direction
         """
 
         inputs = torch.tensor(inputs).float()
 
-        output = [0] * 4
+        outputs = [0] * 4
 
         net_product = self.net(inputs).tolist()
-        output[net_product.index(max(net_product))] = 1
+        outputs[net_product.index(max(net_product))] = 1
 
-        return output
+        return outputs

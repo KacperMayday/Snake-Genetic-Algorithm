@@ -107,8 +107,8 @@ class Game:
         """Gathers input list ready to be passed to the net.
 
         First four elements in the input list represents the direction to the apple.
-        Then for each sensor appends binary value whether it detects collision with snake's body
-        segments or not, then if the sensor lies beyond the screen.
+        Then for each sensor appends binary value whether it detects collision
+        with snake's body segments or not, then if the sensor lies beyond the screen.
         Total inputs: 4 apple directions + 4 sensors * (1 detects snake's body + 1 detects
         screen boundaries) So the length of returned list is 12.
 
@@ -151,8 +151,9 @@ class Game:
     def loop(self):
         """Game's loop responsible for controlling the game.
 
-        This loop controls game's behaviour and returns final score. It has
-        pause functionality on space bar. Mainly, it is responsible to tie game objects together.
+        This loop controls game's behaviour and returns final score. It has pause
+        functionality on space bar. Mainly, it is responsible to tie game objects
+        together.
 
         Returns
         -------
