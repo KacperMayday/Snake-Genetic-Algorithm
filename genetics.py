@@ -1,4 +1,4 @@
-"""Module responsible for handling genetic algorithm functions and neural network"""
+"""Module responsible for handling genetic algorithm functions and neural network."""
 
 from random import randint
 
@@ -157,13 +157,13 @@ class Brain(nn.Module):
 
     Attributes
     ----------
-    self.in_nodes : int
+    in_nodes : int
         number of input nodes / features for the network
-    self.hidden_nodes : int
+    hidden_nodes : int
         number of hidden nodes
-    self.out_nodes : int
+    out_nodes : int
         number of output nodes, corresponds to four main directions
-    self.net : obj
+    net : obj
         object representing neural network architecture
 
     Methods
@@ -174,12 +174,13 @@ class Brain(nn.Module):
         to one and the rest to zero
     """
 
-    in_nodes = 12
-    hidden_nodes = 8
-    out_nodes = 4
-
     def __init__(self):
         super(Brain, self).__init__()
+
+        self.in_nodes = 12
+        self.hidden_nodes = 8
+        self.out_nodes = 4
+        
         self.net = nn.Sequential(nn.Linear(self.in_nodes, self.hidden_nodes),
                                  nn.Tanh(),
                                  nn.Linear(self.hidden_nodes, self.out_nodes),

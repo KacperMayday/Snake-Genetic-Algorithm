@@ -1,10 +1,10 @@
-"""Module responsible to initialize random population
+"""Module responsible to initialize random population.
 
 Run this module to initialize random neural networks for your chosen population size. It is important to create
 networks before running main.py.
 
 The data will be stored in data/ directory which will be created during the proccess. Each neural network
-has it's own ID ranging from 0 to cfg.POPULATION_SIZE.
+has its own ID ranging from 0 to cfg.POPULATION_SIZE.
 
 If data directory is already created, whole directory will be erased and replaced with new random samples.
 To prevent your current samples from being replaced, rename your current data/ directory.

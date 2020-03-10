@@ -14,36 +14,33 @@ class Game:
     This class maintains most of the functions in the game i.e. collisions,
     game loop, scoring and updating the screen. It calls all constructors from
     objects.py and load neural network parameters based on current phase.
+
+    Attributes
+    ----------
+    phase : int
+        represents current phase, used to indicate from which file should
+        brain load its parameters.
+    screen : obj
+        screen object on which game is displayed
+    run : bool
+        bool value which controls while loop in self.loop()
+    score : int
+        stores score value but also indicates number of snake's segments
+    head : obj
+        first of snake's segments, controls the snake movement
+    apple : obj
+        represents apple, vanishes upon collision with self.head
+    body_list : list
+        contains all snake's body segments
+    sensors : list
+        contains all four sensors monitoring each direction
+    brain : obj
+        neural network object which controls snake's behaviour
+    timer : int
+        used to measure time passed between two apple catches, prevents snake looping
     """
 
     def __init__(self, phase, screen):
-        """Initialize the game for given phase.
-
-        Attributes
-        ----------
-        self.phase : int
-            represents current phase, used to indicate from which file should
-            brain load its parameters.
-        self.screen : obj
-            screen object on which game is displayed
-        self.run : bool
-            bool value which controls while loop in self.loop()
-        self.score : int
-            stores score value but also indicates number of snake's segments
-        self.head : obj
-            first of snake's segments, controls the snake movement
-        self.apple : obj
-            represents apple, vanishes upon collision with self.head
-        self.body_list : list
-            contains all snake's body segments
-        self.sensors : list
-            contains all four sensors monitoring each direction
-        self.brain : obj
-            neural network object which controls snake's behaviour
-        self.timer : int
-            used to measure time passed between two apple catches, prevents snake looping
-        """
-
         self.phase = phase
         self.screen = screen
         self.run = True
@@ -64,7 +61,8 @@ class Game:
         self.head.update(self.screen)
 
         for body in self.body_list:
-            body.body_move(self.screen)
+            body.body_move()
+            body.update(self.screen)
 
         self.apple.update(self.screen)
 

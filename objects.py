@@ -1,4 +1,9 @@
-"""Module containing objects used in the game"""
+"""Module containing objects used in the game.
+
+Global list POSITIONS is filled by head's coordinates every frame. There are needed
+to determine position of sensors and snake's body segments. This allows snake's body
+to follow exact path which head takes.
+"""
 
 from random import randint
 
@@ -10,17 +15,24 @@ POSITIONS = []
 
 
 class Snake:
-    """A class used to represent each segment of the snake.
+    """A class used to represent each segment of the snake as well as its head.
 
     Attributes
     ----------
-    self.positioner : int
+    positioner : int
         represents movement delay between each segments
-    self.color : tuple
+    color : tuple
         color of the snake in RGB format
-    self.size : int
+    size : int
         snake's size in pixels
     number : int
+
+    xvelocity, yvelocity : int
+
+    rect : obj
+
+    turn_counter : int
+
 
     Methods
     -------
@@ -33,11 +45,10 @@ class Snake:
         gather coordinates from global POSITIONS array for the next move for each segment
     """
 
-    positioner = cfg.SIZE // cfg.VELOCITY
-    color = (0, 0, 0)
-    size = cfg.SIZE
-
     def __init__(self, number):
+        self.positioner = cfg.SIZE // cfg.VELOCITY
+        self.color = (0, 0, 0)
+        self.size = cfg.SIZE
         self.number = number
         global POSITIONS
 
@@ -52,6 +63,7 @@ class Snake:
             self.y = cfg.SCREENHEIGHT // 2
             POSITIONS.clear()
             POSITIONS.append((self.x, self.y))
+
         self.xvelocity = 0
         self.yvelocity = 0
         self.rect = pygame.Rect(self.x, self.y, self.size, self.size)
@@ -116,24 +128,23 @@ class Snake:
         POSITIONS.append((self.x, self.y))
 
     def update(self, screen):
-        """
+        """Updates snake's position on the screen.
 
         Parameter
         ---------
         screen : obj
-
+            screen object where snake is updated
         """
 
         self.rect = pygame.Rect(self.x, self.y, self.size, self.size)
         pygame.draw.rect(screen, self.color, self.rect)
 
-    def body_move(self, screen):
-        """
+    def body_move(self):
+        """Gathers coordinates corresponding to body segment.
 
-        Parameter
-        ---------
-        screen : obj
-
+        It may happen that POSITIONS array is not filled yet with enough coordinates
+        so the segment can't acquire correct x and y. Since POSITIONS is updated quite
+        fast, this problem is not significant and barely visible.
         """
 
         try:
@@ -141,7 +152,6 @@ class Snake:
             self.y = POSITIONS[-self.number*self.positioner - 1][1]
         except IndexError:
             pass
-        self.update(screen)
 
 
 class Apple:
@@ -149,13 +159,13 @@ class Apple:
 
     Attributes
     ----------
-    self.size : int
+    size : int
         apple's size in pixels
-    self.color : tuple
+    color : tuple
         color of the apple in RGB format
-    self.x, self.y : int
+    x, y : int
 
-    self.rect : obj
+    rect : obj
 
 
     Methods
@@ -164,20 +174,20 @@ class Apple:
         updates apple's position on the screen
     """
 
-    size = cfg.SIZE
-    color = (250, 50, 5)
-
     def __init__(self):
+        self.size = cfg.SIZE
+        self.color = (250, 50, 5)
         self.x = randint(4 * cfg.VELOCITY, cfg.SCREENWIDTH - self.size - 4 * cfg.VELOCITY)
         self.y = randint(4 * cfg.VELOCITY, cfg.SCREENHEIGHT - self.size - 4 * cfg.VELOCITY)
         self.rect = pygame.Rect(self.x, self.y, self.size, self.size)
 
     def update(self, screen):
-        """
+        """Updates apple's position on the screen.
+
         Parameter
         ---------
         screen : obj
-
+            screen object where apple is updated
         """
 
         self.rect = pygame.Rect(self.x, self.y, self.size, self.size)
@@ -185,23 +195,37 @@ class Apple:
 
 
 class Sensor:
-    """A class used to represents a sensor which detects collision. They are used to produce inputs for Brain class.
+    """A class used to represents a sensor which detects collision. They are used
+    to produce inputs for neural network.
 
     Attributes
     ----------
     color : tuple
         sensor's color in RGB format
+    xchange, ychange : int
+
+    direction : str
+
+    color : tuple
+
+    xchange, ychange : int
+
+    width, height : int
+
+    x, y : int
+
+    rect : obj
+
 
     Methods
     -------
     update(screen)
         gather last coordinates of head from global POSITIONS array and adjust the value based on which sensor
-        it is, then updates position on the screen
+        it is, then updates its position on the screen
     """
 
-    color = (0, 0, 0)
-
     def __init__(self, position):
+        self.color = (0, 0, 0)
         self.xchange = 0
         self.ychange = 0
         self.direction = position
@@ -229,11 +253,12 @@ class Sensor:
         self.rect = None
 
     def update(self, screen):
-        """
+        """Updates sensor's position on the screen.
         
         Parameter
         ---------
         screen : obj
+            screen object where sensor is updated
         """
 
         self.x = POSITIONS[-1][0]
