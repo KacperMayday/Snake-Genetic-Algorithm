@@ -106,9 +106,9 @@ class Game:
 
         First four elements in the input list represents the direction to the apple.
         Then for each sensor appends binary value whether it detects collision
-        with snake's body segments or not, then if the sensor lies beyond the screen.
-        Total inputs: 4 apple directions + 4 sensors * (1 detects snake's body + 1 detects
-        screen boundaries) So the length of returned list is 12.
+        with snake's body segments or if the sensor lies beyond the screen.
+        Total inputs: 4 apple directions + 4 sensors * (1 detects snake's body or detects
+        screen boundaries) So the length of returned list is 8.
 
         Note
         ----
