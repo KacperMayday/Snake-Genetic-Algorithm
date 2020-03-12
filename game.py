@@ -132,7 +132,7 @@ class Game:
 
         for sensor in self.sensors:  # checks collisions for every sensor
             activation = 0
-            for body in self.body_list:
+            for body in self.body_list[1:]:
                 if pygame.Rect.colliderect(sensor.rect, body.rect):
                     activation = 1
                     break

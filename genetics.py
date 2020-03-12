@@ -188,7 +188,7 @@ class Brain(nn.Module):
         self.out_nodes = 4
         
         self.net = nn.Sequential(nn.Linear(self.in_nodes, self.out_nodes),
-                                 nn.Tanh())
+                                 nn.Sigmoid())
 
     def forward(self, inputs):
         """Model's forwarding method which produces outputs.

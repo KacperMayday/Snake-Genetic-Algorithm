@@ -205,8 +205,8 @@ class Apple:
     def __init__(self):
         self.size = cfg.SIZE
         self.color = (250, 50, 5)
-        self.x = randint(4 * cfg.VELOCITY, cfg.SCREENWIDTH - self.size - 4 * cfg.VELOCITY)
-        self.y = randint(4 * cfg.VELOCITY, cfg.SCREENHEIGHT - self.size - 4 * cfg.VELOCITY)
+        self.x = randint(2 * cfg.VELOCITY, cfg.SCREENWIDTH - self.size - 2 * cfg.VELOCITY)
+        self.y = randint(2 * cfg.VELOCITY, cfg.SCREENHEIGHT - self.size - 2 * cfg.VELOCITY)
         self.rect = pygame.Rect(self.x, self.y, self.size, self.size)
 
     def update(self, screen):
@@ -252,7 +252,7 @@ class Sensor:
         self.color = (0, 0, 0)
         self.xchange = 0
         self.ychange = 0
-        distance = 2 * cfg.VELOCITY  # distance between sensor and snake's head
+        distance = cfg.VELOCITY  # distance between sensor and snake's head
         if position == 'up' or position == 'down':  # determine sensor position
             if position == 'up':
                 self.ychange = -distance

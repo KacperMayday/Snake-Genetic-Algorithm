@@ -84,16 +84,19 @@ def append_stats(score_array, epoch, best_score, best_epoch, best_average, best_
         epoch in which best average score has been achieved
     """
 
-    print('Epoch: {}'.format(epoch + 1),
-          'Best: {}'.format(max(score_array)),
-          'Average: {}'.format(st.mean(score_array)),
-          'The Best: {} in epoch {}'.format(best_score, best_epoch),
-          'Best Average: {} in epoch {}'.format(best_average, best_average_epoch))
+    best = round(max(score_array), 3)
+    average = round(st.mean(score_array), 3)
+
+    print('Epoch: {:0>3d}'.format(epoch + 1),
+          'Best: {:7.3f}'.format(best),
+          'Average: {:7.3f}'.format(average),
+          'The Best: {:7.3f} in epoch {:0>3d}'.format(best_score, best_epoch),
+          'Best Average: {:7.3f} in epoch {:0>3d}'.format(best_average, best_average_epoch))
 
     with open('data/track.txt', 'a') as file:
         file.write('{};{};{};{};{};{};{}\n'.format(epoch + 1,
-                                                   max(score_array),
-                                                   st.mean(score_array),
+                                                   best,
+                                                   average,
                                                    best_score,
                                                    best_epoch,
                                                    best_average,
@@ -141,11 +144,11 @@ def training_mode():
     for epoch in range(cfg.EPOCHS):
         scores = run_generation()
         if max(scores) > best_score:
-            best_score = max(scores)
+            best_score = round(max(scores), 3)
             best_epoch = epoch + 1
 
         if st.mean(scores) > best_average:
-            best_average = st.mean(scores)
+            best_average = round(st.mean(scores), 3)
             best_average_epoch = epoch + 1
 
         append_stats(scores, epoch, best_score, best_epoch, best_average, best_average_epoch)
