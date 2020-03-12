@@ -122,7 +122,7 @@ def run_generation():
 
 def show_mode():
     """Show mode without genetic algorithm. Used only for displaying the results"""
-    loop = input('How many times you want to display last population?')
+    loop = input('How many times you want to display last population?\n')
     try:
         loop = int(loop)
     except ValueError:
