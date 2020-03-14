@@ -1,6 +1,6 @@
 # Snake Genetic Algorithm
 ## About the project
-Main goal of this project is to show simple implementation of genetic algorithm used with neural networks. 
+Main goal of this project is to show simple implementation of genetic algorithm used with neural networks.  
 Required modules:
 * [PyGame](https://www.pygame.org/)
 * [PyTorch](https://pytorch.org/)
