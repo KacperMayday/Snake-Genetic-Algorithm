@@ -22,10 +22,9 @@ During crossing-over, first parent's each network parameter from each layer (wei
 ## How to run
 1. Make sure that you acquired all needed modules (check requirements.txt).
 2. Check config.py and adjust constants for your need (show or training mode). By default constants are ready for training. See configurations below for further explanation.
-3. Run preparation.py and confirm.
-4. Run main.py.
+3. Run main.py -r and confirm.
 5. When training is done, adjust config.py for show mode.
-6. Run main.py and see the results :)
+6. Run main.py -s [number] to display population [number] times and see the results :)
 7. Play with the constants and see different outcomes after training.
 
 ## Configurations
@@ -43,7 +42,7 @@ SCREENWIDTH = 50
 SCREENHEIGHT = 50  
 TICKRATE = 10000  
 VELOCITY = 1  
-SIZE = 2  
+SIZE = VELOCITY  
 POPULATION_SIZE = 100  
 PARENTS_SIZE = 10  
 IDLE_TIME = 2000  
@@ -58,7 +57,7 @@ SCREENWIDTH = 50 * 12
 SCREENHEIGHT = 50 * 12  
 TICKRATE = 30  
 VELOCITY = 1 * 12  
-SIZE = 2 * 12  
+SIZE = VELOCITY   
 POPULATION_SIZE = 100  
 PARENTS_SIZE = 10  
 IDLE_TIME = 2000 * 3  
