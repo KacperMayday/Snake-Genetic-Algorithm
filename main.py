@@ -6,12 +6,14 @@ genetic algorithm.
 """
 
 import statistics as st
+import argparse
 
 import pygame
 
 import config as cfg
 import game
 import genetics
+import preparation as prep
 
 
 def constants_validation():
@@ -19,12 +21,6 @@ def constants_validation():
 
     if cfg.POPULATION_SIZE % cfg.PARENTS_SIZE != 0:
         raise ValueError('Population size must be a multiplicity of parents size!')
-
-    if cfg.SIZE % cfg.VELOCITY != 0:
-        raise ValueError('Size must be a multiplicity of velocity!')
-
-    if cfg.VELOCITY > cfg.SIZE:
-        raise ValueError('Velocity must be lower than size!')
 
 
 def sort_best(score_array):
@@ -120,13 +116,13 @@ def run_generation():
     return score_array
 
 
-def show_mode():
+def show_mode(loop):
     """Show mode without genetic algorithm. Used only for displaying the results"""
-    loop = input('How many times you want to display last population?\n')
+    '''loop = input('How many times you want to display last population?\n')
     try:
         loop = int(loop)
     except ValueError:
-        print('Invalid number!')
+        print('Invalid number!')'''
 
     for iterator in range(loop):
         scores = run_generation()
@@ -160,10 +156,21 @@ def training_mode():
 
 if __name__ == '__main__':
     constants_validation()  # checks constants
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-s", "--show", help="open show mode", type=int)
+    parser.add_argument("-r", "--restart", help="prepare population", action="store_true")
+    args = parser.parse_args()
+
     pygame.init()  # initialize pygame
 
-    if cfg.EPOCHS == 1:  # show mode without genetic algorithm
-        show_mode()
-
-    else:  # training mode with genetic algorithm
+    if args.restart:
+        print("Preparation...")
+        prep.preparation()
+        print("Preparation complete")
+    if args.show:
+        print("Show mode...")
+        show_mode(args.show)
+    else:
+        print("Training mode...")
         training_mode()
