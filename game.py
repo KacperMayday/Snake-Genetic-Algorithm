@@ -38,6 +38,17 @@ class Game:
         neural network object which controls snake's behaviour
     timer : int
         used to measure time passed between two apple catches, prevents snake looping
+
+    Methods
+    -------
+    update(inputs)
+        updates each object currently in the game and moves snake's head
+    check()
+        checks all game conditions
+    get_inputs()
+        gather inputs for neural network and returns input list
+    loop()
+        main game loop, at the end returns final score of the game
     """
 
     def __init__(self, phase, screen):
@@ -49,25 +60,43 @@ class Game:
         self.head = obj.Snake(self.score)
         self.apple = obj.Apple()
         self.body_list = []
-        self.sensors = [obj.Sensor('up'), obj.Sensor('right'), obj.Sensor('down'), obj.Sensor('left')]
+        self.sensors = [obj.Sensor('up', self.head.x, self.head.y),
+                        obj.Sensor('right', self.head.x, self.head.y),
+                        obj.Sensor('down', self.head.x, self.head.y),
+                        obj.Sensor('left', self.head.x, self.head.y)]
         self.brain = genetics.Brain()
         self.brain.load_state_dict(torch.load('data/{}.pt'.format(phase)))
         self.brain.eval()
         self.timer = pygame.time.get_ticks()
 
-    def update(self):
-        """Updates game's objects on the screen."""
+    def update(self, inputs):
+        """Updates game's objects on the screen.
 
-        self.head.update(self.screen)
+        Sequentially updates each object currently present in the game.
+        Body segments are updated from last to first.
 
-        for sensor in self.sensors:
-            sensor.update(self.screen)
+        Parameters
+        ----------
+        inputs : list
+            list representing movement orders for snake's head
+        """
 
-        for body in self.body_list:
-            body.body_move()
+        for index, body in reversed(list(enumerate(self.body_list[1:], 1))):  
+            body.set_coordinates(self.body_list[index-1].x, self.body_list[index-1].y)
             body.update(self.screen)
 
+        try:
+            self.body_list[0].set_coordinates(self.head.x, self.head.y)
+            self.body_list[0].update(self.screen)
+        except IndexError:
+            pass
+
         self.apple.update(self.screen)
+
+        self.head.move(inputs, self.screen)  # moves and updates snake's head
+
+        for sensor in self.sensors:
+            sensor.update(self.screen, self.head.x, self.head.y)
 
     def check(self):
         """Checks all game conditions.
@@ -79,21 +108,27 @@ class Game:
         counter is set to 0 to eliminate snake's with looping behaviour.
         """
 
-        if pygame.Rect.colliderect(self.head.rect, self.apple.rect):  # checks apple - snake's head collision
-            self.apple = obj.Apple()  # creates new apple object
-            self.score += 1  # increment the score
-            self.body_list.append(obj.Snake(self.score))  # creates new snake's body segment
-            self.timer = pygame.time.get_ticks()  # resets the timer
-
-        for body in self.body_list[1:]:  # checks body - snake's head collision
+        for body in self.body_list:  # checks body - snake's head collision
             if pygame.Rect.colliderect(self.head.rect, body.rect):  # terminates self.loop() if true
                 self.run = False
                 break
 
-        if (self.head.x <= 0 or                                     # checks if snake's head is
-                self.head.x + self.head.size >= cfg.SCREENWIDTH or  # not beyond the screen
-                self.head.y <= 0 or
-                self.head.y + self.head.size >= cfg.SCREENHEIGHT):
+        if pygame.Rect.colliderect(self.head.rect, self.apple.rect):  # checks apple - snake's head collision
+            self.apple = obj.Apple()  # creates new apple object
+            self.score += 1  # increment the score
+            try:
+                self.body_list.append(obj.Snake(self.body_list[-1].x,
+                                                self.body_list[-1].y))  # creates new snake's body segment
+            except IndexError:
+                self.body_list.append(obj.Snake(self.head.x,
+                                                self.head.y))
+
+            self.timer = pygame.time.get_ticks()  # resets the timer
+
+        if (self.head.x < 0 or                                     # checks if snake's head is
+                self.head.x + self.head.size > cfg.SCREENWIDTH or  # not beyond the screen
+                self.head.y < 0 or
+                self.head.y + self.head.size > cfg.SCREENHEIGHT):
             self.run = False
 
         check_time = pygame.time.get_ticks()
@@ -120,19 +155,19 @@ class Game:
             a list of binary inputs representing each detected feature
         """
 
-        inputs = [0] * 4                                     # gathers input from apple position
-        if self.apple.y <= self.head.y - self.apple.size:    # if apple is higher than head
+        inputs = [0] * 4
+        if self.apple.y < self.head.y:  # - self.apple.size:    # if apple is higher than head
             inputs[0] = 1
-        elif self.apple.y >= self.head.y + self.head.size:   # if apple is lower than head
+        elif self.apple.y > self.head.y:  # + self.head.size:   # if apple is lower than head
             inputs[1] = 1
-        if self.apple.x >= self.head.x + self.head.size:     # if apple is on the right
+        if self.apple.x > self.head.x:  # + self.head.size:     # if apple is on the right
             inputs[2] = 1
-        elif self.apple.x <= self.head.x - self.apple.size:  # if apple is on the left
+        elif self.apple.x < self.head.x:  # - self.apple.size:  # if apple is on the left
             inputs[3] = 1
 
         for sensor in self.sensors:  # checks collisions for every sensor
             activation = 0
-            for body in self.body_list[1:]:
+            for body in self.body_list:
                 if pygame.Rect.colliderect(sensor.rect, body.rect):
                     activation = 1
                     break
@@ -145,7 +180,7 @@ class Game:
         return inputs
 
     def loop(self):
-        """Game's loop responsible for controlling the game.
+        """Main loop responsible for controlling the game.
 
         This loop controls game's behaviour and returns final score. It has pause
         functionality on space bar. Mainly, it is responsible to tie game objects
@@ -183,9 +218,8 @@ class Game:
                         pause = False
 
             inputs = self.brain(self.get_inputs())  # gathers direction order for the snake's head
-            self.head.move(inputs)  # moves the snake's head
+            self.update(inputs)  # updates objects on the screen
             self.check()  # checks game conditions
-            self.update()  # updates objects on the screen
 
             pygame.display.flip()  # flips the frames
             self.clock.tick(cfg.TICKRATE)  # monitor given maximum frame rate

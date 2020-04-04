@@ -1,17 +1,10 @@
-"""Module containing objects used in the game.
-
-Global list POSITIONS is filled by head's coordinates every frame. There are needed
-to determine position of sensors and snake's body segments. This allows snake's body
-to follow exact path which head takes.
-"""
+"""Module containing objects used in the game."""
 
 from random import randint
 
 import pygame
 
 import config as cfg
-
-POSITIONS = []
 
 
 class Snake:
@@ -22,14 +15,12 @@ class Snake:
 
     Attributes
     ----------
-    positioner : int
-        represents movement delay between each segments
     color : tuple
         color of the snake in RGB format
     size : int
         snake's size in pixels
-    number : int
-        unique number of the segment, head is first and starts with number 0
+    x, y : int
+        object's coordinates
     xvelocity, yvelocity : int
         velocity on x and y axes
     rect : obj
@@ -39,47 +30,33 @@ class Snake:
 
     Methods
     -------
-    move(inputs)
-        encodes inputs array to direction in which snake's head should move
-        and append head's new coordinates to global POSITIONS array
+    move(inputs, screen)
+        encodes inputs array to direction in which snake's head should move and
+        updates it on the given screen
     update(screen)
         updates segment position on the screen
-    body_move(screen)
-        gather coordinates from global POSITIONS array for the next move for each segment
+    set_coordinates(x, y)
+        changes segment's coordinates
     """
 
-    def __init__(self, number):
-        self.positioner = cfg.SIZE // cfg.VELOCITY
+    def __init__(self,
+                 x=randint(0, cfg.SCREENWIDTH // cfg.SIZE) * cfg.SIZE,
+                 y=randint(0, cfg.SCREENHEIGHT // cfg.SIZE) * cfg.SIZE):
         self.color = (0, 0, 0)
         self.size = cfg.SIZE
-        self.number = number
-        global POSITIONS
-
-        if self.number == 0:
-            self.x = cfg.SCREENWIDTH // 2
-            self.y = cfg.SCREENHEIGHT // 2
-            POSITIONS.clear()
-            POSITIONS.append((self.x, self.y))
-            self.rect = pygame.Rect(self.x, self.y, self.size, self.size)
-        else:
-            try:
-                self.x = POSITIONS[-self.number * self.positioner - 1][0]
-                self.y = POSITIONS[-self.number * self.positioner - 1][1]
-                self.rect = pygame.Rect(self.x, self.y, self.size, self.size)
-            except IndexError:
-                self.x = -self.size
-                self.y = -self.size
-                self.rect = pygame.Rect(self.x, self.y, self.size, self.size)  # temporary rect
+        self.x = x
+        self.y = y
+        self.rect = pygame.Rect(self.x, self.y, self.size, self.size)
 
         self.xvelocity = 0
         self.yvelocity = 0
         self.turn_counter = 0
 
-    def move(self, inputs):
+    def move(self, inputs, screen):
         """Updates head's coordinates and counts turns if made.
 
         This method changes snake's coordinates based on inputs. Change may not be done
-        if it exceeds 90 degree.
+        if it is not 90 degree.
 
         Note
         ----
@@ -93,6 +70,8 @@ class Snake:
         ---------
         inputs : list
             one-hot inputs array indicating next move direction
+        screen : obj
+            screen on which object is displayed
         """
 
         xtemp = self.xvelocity
@@ -146,9 +125,8 @@ class Snake:
         # elif self.y < -self.size:
         #     self.y += cfg.SCREENHEIGHT + self.size
 
-        # DO NOT comment these two lines
-        global POSITIONS
-        POSITIONS.append((self.x, self.y))
+        # DO NOT comment this line
+        self.update(screen)
 
     def update(self, screen):
         """Updates snake's position on the screen.
@@ -162,19 +140,16 @@ class Snake:
         self.rect = pygame.Rect(self.x, self.y, self.size, self.size)
         pygame.draw.rect(screen, self.color, self.rect)
 
-    def body_move(self):
-        """Gathers coordinates corresponding to body segment.
+    def set_coordinates(self, x, y):
+        """Set coordinates corresponding to body segment.
 
-        It may happen that POSITIONS array is not filled yet with enough coordinates
-        so the segment can't acquire correct x and y. Since POSITIONS is updated quite
-        fast, this problem is not significant and barely visible.
+        Parameter
+        ---------
+        x, y : int
+            object's coordinates
         """
-
-        try:
-            self.x = POSITIONS[-self.number*self.positioner - 1][0]
-            self.y = POSITIONS[-self.number*self.positioner - 1][1]
-        except IndexError:
-            pass
+        self.x = x
+        self.y = y
 
 
 class Apple:
@@ -205,8 +180,8 @@ class Apple:
     def __init__(self):
         self.size = cfg.SIZE
         self.color = (250, 50, 5)
-        self.x = randint(cfg.VELOCITY, cfg.SCREENWIDTH - self.size - cfg.VELOCITY)
-        self.y = randint(cfg.VELOCITY, cfg.SCREENHEIGHT - self.size - cfg.VELOCITY)
+        self.x = randint(0, (cfg.SCREENWIDTH - self.size) // self.size) * self.size
+        self.y = randint(0, (cfg.SCREENHEIGHT - self.size) // self.size) * self.size
         self.rect = pygame.Rect(self.x, self.y, self.size, self.size)
 
     def update(self, screen):
@@ -243,12 +218,11 @@ class Sensor:
 
     Methods
     -------
-    update(screen)
-        gather last coordinates of head from global POSITIONS array and adjust the value based on which sensor
-        it is, then updates its position on the screen
+    update(screen, x, y)
+        updates sensor's position in relation to head's coordinates
     """
 
-    def __init__(self, position):
+    def __init__(self, position, x, y):
         self.color = (0, 0, 0)
         self.xchange = 0
         self.ychange = 0
@@ -271,21 +245,23 @@ class Sensor:
             self.width = distance
             self.height = cfg.SIZE
 
-        self.x = POSITIONS[-1][0]
-        self.y = POSITIONS[-1][1]
+        self.x = x
+        self.y = y
         self.rect = pygame.Rect(self.x, self.y, self.width, self.height)
 
-    def update(self, screen):
+    def update(self, screen, x, y):
         """Updates sensor's position on the screen.
         
         Parameter
         ---------
         screen : obj
             screen object where sensor is updated
+        x, y : int
+            head's coordinates
         """
 
-        self.x = POSITIONS[-1][0]  # gather last head's positions
-        self.y = POSITIONS[-1][1]
+        self.x = x
+        self.y = y
         self.x += self.xchange  # adjust gathered position for specific sensor
         self.y += self.ychange
         self.rect = pygame.Rect(self.x, self.y, self.width, self.height)
