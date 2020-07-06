@@ -8,7 +8,7 @@ Required modules:
 
 ## How it works
 ### The game
-The game is written in Python 3 and uses PyGame module for displaying graphics. All mechanics comes from popular old Snake game, where player controls snake's movement and the goal is to catch as many apples as possible without running into snake's tail or screen borders. In my project, snake is controlled by neural network which is trained by genetic algorithm.  
+The game is written in Python 3 and uses PyGame module for displaying graphics. All mechanics come from popular old Snake game, where player controls snake's movement and the goal is to catch as many apples as possible without running into snake's tail or screen borders. In my project, snake is controlled by neural network which is trained by genetic algorithm.  
 ### Neural Network and Genetic Algorithm using PyTorch
 The Network consists two layers: input and output layer. Input layer has 8 nodes, while output has 4 nodes. The Network is fully connected, which means that every node from input layer is connected to every node in output layer. Inputs and outputs are one hot encoded.
 #### Inputs
